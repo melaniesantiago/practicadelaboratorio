@@ -18,9 +18,6 @@
 - Melanie Santiago Resendiz
 - Andrea Jacob Salas
 
-## Evidencia en video
-
-Video del equipo realizando la práctica:
 ## VIDEO DE PRACTICA: Implementación de un Servidor CoAP en ESP32 con Arduino IDE
 
 https://drive.google.com/drive/folders/1cBncRejVvgpj8fkIvL4IdxTe3QwQluW5?usp=sharing
