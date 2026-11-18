@@ -260,7 +260,7 @@ Sin DTLS no hay cifrado ni autenticación: el tráfico viaja en texto plano y el
 
 **Reto 1: control de un LED físico mediante CoAP.** Se conectó un LED a la placa y se modificó `callback_led()` para comparar el payload: con `ON` se ejecuta `digitalWrite(LED_PIN, HIGH)` y con `OFF`, `digitalWrite(LED_PIN, LOW)`. La respuesta del servidor indica el estado aplicado. El pin se configura como salida en `setup()` con `pinMode`.
 
-![LED encendido mediante POST /led](evidencia/led_encendido.jpg)
+![LED encendido mediante POST /led](evidencia/led.jpeg)
 
 ## 12. Conclusiones
 
