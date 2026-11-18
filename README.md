@@ -14,7 +14,7 @@
 
 | Nombre | Usuario de GitHub | Actividad realizada |
 | :--- | :--- | :--- |
-| [COMPLETAR: nombre] | [COMPLETAR: @usuario] | [COMPLETAR: actividad] |
+| [Freyra Wendy Martínez Martínez] | [COMPLETAR: @usuario] | [COMPLETAR: actividad] |
 | [COMPLETAR: nombre] | [COMPLETAR: @usuario] | [COMPLETAR: actividad] |
 | [COMPLETAR: nombre] | [COMPLETAR: @usuario] | [COMPLETAR: actividad] |
 | [COMPLETAR: nombre] | [COMPLETAR: @usuario] | [COMPLETAR: actividad] |
