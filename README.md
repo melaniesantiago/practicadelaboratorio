@@ -173,6 +173,11 @@ Todos los valores se encuentran dentro del rango esperado (25.4 a 30.3 °C).
 ### 7.4 Observación sobre el formato de la temperatura
 
 La guía indica una salida como `Temp: 27.1 C`, pero la temperatura se imprime con dos decimales (`27.20`). Esto se debe a que `String(float)` de Arduino utiliza dos decimales por defecto.
+### 7.5 Captura de tráfico en Wireshark
+
+Se realizó una captura de tráfico real en la interfaz Wi-Fi filtrando por el protocolo `coap` (puerto UDP `5683`) durante la ejecución completa del script cliente (`10.44.133.91`, puerto origen `63234`) contra el servidor ESP32-C6 (`10.44.133.130`, puerto destino `5683`). En total se observaron 16 paquetes CoAP (8 peticiones y 8 respuestas).
+
+![Captura de tráfico CoAP en Wireshark](evidencias/wireshark_coap.jpg)
 
 ## 8. Análisis de resultados
 
