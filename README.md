@@ -17,8 +17,8 @@
 | Freyra Wendy Martínez Martínez | [COMPLETAR: actividad] |
 | Carol Mera Ibarra | [COMPLETAR: actividad] |
 | Karen Pérez Ortiz | [COMPLETAR: actividad] |
-| [COMPLETAR: nombre] | [COMPLETAR: actividad] |
-| [COMPLETAR: nombre] | [COMPLETAR: actividad] |
+| Melanie Santiago Resendiz | [COMPLETAR: actividad] |
+| Andrea Jacob Salas | [COMPLETAR: actividad] |
 
 ## Evidencia en video
 
