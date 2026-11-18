@@ -6,7 +6,7 @@
 | :--- | :--- |
 | **Institución** | Instituto Tecnológico Superior del Occidente del Estado de Hidalgo |
 | **División** | Ingeniería en Tecnologías de la Información y Comunicaciones |
-| **Materia** | [COMPLETAR: nombre de la materia] |
+| **Materia** | [Internet de las cosas] |
 | **Docente** | Prof. Saúl Isaí Soto Ortiz |
 | **Fecha de entrega** | 18 de noviembre de 2026 |
 
@@ -15,7 +15,7 @@
 | Nombre | Usuario de GitHub | Actividad realizada |
 | :--- | :--- | :--- |
 | [Freyra Wendy Martínez Martínez] | [COMPLETAR: @usuario] | [COMPLETAR: actividad] |
-| [COMPLETAR: nombre] | [COMPLETAR: @usuario] | [COMPLETAR: actividad] |
+| [Carol Mera Ibarra] | [COMPLETAR: @usuario] | [COMPLETAR: actividad] |
 | [COMPLETAR: nombre] | [COMPLETAR: @usuario] | [COMPLETAR: actividad] |
 | [COMPLETAR: nombre] | [COMPLETAR: @usuario] | [COMPLETAR: actividad] |
 
