@@ -278,6 +278,11 @@ Sin DTLS no hay cifrado ni autenticación: el tráfico viaja en texto plano y el
 
 En Arduino IDE, el archivo `.ino` debe estar dentro de una carpeta con el mismo nombre.
 
+## VIDEO DE PRACTICA: Implementación de un Servidor CoAP en ESP32 con Arduino IDE
+
+https://drive.google.com/drive/folders/1cBncRejVvgpj8fkIvL4IdxTe3QwQluW5?usp=sharing
+
+
 ## 14. Referencias
 
 - Shelby, Z., Hartke, K. y Bormann, C. (2014). *The Constrained Application Protocol (CoAP)*, RFC 7252. IETF.
