@@ -16,6 +16,7 @@
 | :--- | :--- |
 | Freyra Wendy Martínez Martínez | [COMPLETAR: actividad] |
 | Carol Mera Ibarra | [COMPLETAR: actividad] |
+| Karen Pérez Ortiz | [COMPLETAR: actividad] |
 | [COMPLETAR: nombre] | [COMPLETAR: actividad] |
 | [COMPLETAR: nombre] | [COMPLETAR: actividad] |
 
@@ -35,11 +36,12 @@ Video del equipo realizando la práctica: [COMPLETAR: enlace al video]
 6. Desarrollo
 7. Resultados
 8. Análisis de resultados
-9. Preguntas de análisis
-10. Reto opcional
-11. Conclusiones
-12. Estructura del repositorio
-13. Referencias
+9. Errores encontrados y soluciones
+10. Preguntas de análisis
+11. Reto opcional
+12. Conclusiones
+13. Estructura del repositorio
+14. Referencias
 
 ---
 
@@ -97,7 +99,6 @@ Todo mensaje inicia con una cabecera fija de 4 bytes que contiene la versión, e
 - Librería CoAPSimple (hirotakaster)
 - Python 3.13 con `aiocoap` 0.4.17
 - Visual Studio Code
-- Wireshark
 
 ## 6. Desarrollo
 
@@ -147,18 +148,16 @@ El Monitor Serie mostró la conexión a la red Wi-Fi y la dirección IP asignada
 ![Monitor Serie con la IP del servidor](evidencias/monitor_serie_ip.png)
 
 ### 7.2 Resumen de pruebas
+| Prueba | Petición | Resultado esperado | Resultado obtenido |
+| :--- | :--- | :--- | :--- |
+| P1 | `GET /sensor` | 2.05 con `Temp: XX.X C` | 2.05 Content con `Temp: 27.20 C` |
+| P2 | `POST /led` con `ON` | Respuesta `Estado: OK...` y payload en el Monitor Serie | 2.05 Content con `Estado: OK desde ESP32 CoAP Server - LED ON`; el LED enciende. Con `OFF` se apaga |
+| P3 | `GET /temperatura` | 4.04 Not Found | `TimeoutError` en el cliente `aiocoap`; la placa responde 4.04 (ver sección 8.2) |
+| P4 | `GET /sensor` x5 | Cinco temperaturas entre 25.4 y 30.3 °C | Ver tabla 7.3 |
 
-| Prueba | Petición | Resultado esperado | Resultado obtenido | Evidencia |
-| :--- | :--- | :--- | :--- | :--- |
-| P1 | `GET /sensor` | 2.05 con `Temp: XX.X C` | 2.05 Content con `Temp: 27.20 C` | `evidencias/P1_sensor.png` |
-| P2 | `POST /led` con `ON` | Respuesta `Estado: OK...` y payload en el Monitor Serie | 2.05 Content con `Estado: OK desde ESP32 CoAP Server - LED ON`; el LED enciende. Con `OFF` se apaga | `evidencias/P2_led.png` |
-| P3 | `GET /temperatura` | 4.04 Not Found | `TimeoutError` en el cliente `aiocoap`; la placa responde 4.04 (ver sección 8.2) | `evidencias/P3_temperatura.png` |
-| P4 | `GET /sensor` x5 | Cinco temperaturas entre 25.4 y 30.3 °C | Ver tabla 7.3 | `evidencias/P4_sensor_x5.png` |
 
 ![P1 y P4: lecturas de /sensor](evidencias/P1_sensor.png)
-
 ![P2: control del LED, cliente y Monitor Serie](evidencias/P2_led.png)
-
 ![P3: ruta inexistente](evidencias/P3_temperatura.png)
 
 ### 7.3 Prueba P4: cinco lecturas de `/sensor`
@@ -181,16 +180,21 @@ La guía indica una salida como `Temp: 27.1 C`, pero la temperatura se imprime c
 
 ### 8.1 Problema del Token en las respuestas
 
-Con la versión corta de `coap.sendResponse(ip, port, messageid, "texto")`, la placa recibía la petición (el Monitor Serie mostraba `Petición CoAP recibida en /led`), pero el cliente `aiocoap` terminaba en `TimeoutError`. La hipótesis es que esa versión de la función no copia el Token de la petición, y `aiocoap` empareja petición y respuesta por Token. El problema se resolvió utilizando la versión larga de la función, que acepta el Token:
+Con la versión corta de `coap.sendResponse(ip, port, messageid, "texto")`, la placa recibía la petición (el Monitor Serie mostraba `Petición CoAP recibida en /led`), pero el cliente `aiocoap` terminaba en `TimeoutError`. La hipótesis es que esa versión de la función no copia el Token de la petición, y `aiocoap` empareja petición y respuesta por Token. El problema se resolvió utilizando la versión larga de la función, que acepta el Token. Tras el cambio, `/sensor` y `/led` respondieron `2.05 Content`.
+
+**Solución aplicada en el código del servidor:**
 
 ```cpp
+// ANTES: la respuesta no incluía el Token de la petición
+coap.sendResponse(ip, port, packet.messageid, "Estado: OK desde ESP32 CoAP Server");
+
+// DESPUÉS: la respuesta copia el Token (packet.token / packet.tokenlen)
+const char* msg = "Estado: OK desde ESP32 CoAP Server";
 coap.sendResponse(ip, port, packet.messageid,
                   msg, strlen(msg),
                   COAP_CONTENT, COAP_TEXT_PLAIN,
                   packet.token, packet.tokenlen);
 ```
-
-Tras el cambio, `/sensor` y `/led` respondieron `2.05 Content`.
 
 ### 8.2 Análisis de la prueba P3
 
@@ -209,38 +213,37 @@ El cliente `aiocoap` terminó en `TimeoutError` al solicitar `/temperatura`. Par
 
 La petición se envió con Token `0xAB` y la respuesta llegó con longitud de Token 0. Por lo tanto, el servidor sí responde 4.04 como establece la práctica, pero esa respuesta no incluye el Token de la petición. Esto es consistente con que `aiocoap` la descarte y se produzca el timeout. Esta relación causal es la explicación más razonable, pero no se comprobó de forma directa.
 
-### 8.3 Captura con Wireshark
+## 9. Errores encontrados y soluciones
 
-Se capturó el tráfico de la interfaz Wi-Fi con el filtro `coap` durante la prueba P1.
+| # | Problema | Causa | Solución |
+| :--- | :--- | :--- | :--- |
+| 1 | El Monitor Serie mostraba puntos sin fin al conectar | La red era de 5 GHz o de otro tipo no compatible; la ESP32 solo usa Wi-Fi de 2.4 GHz | Conectar la placa a una red de 2.4 GHz |
+| 2 | Al salir de la cobertura del Wi-Fi, el cliente dejaba de recibir respuesta | La computadora perdió la red compartida con la placa; al reconectarse, la IP pudo cambiar | Volver a conectar ambos a la misma red, reiniciar la placa con RST y actualizar la IP en el script |
+| 3 | El Monitor Serie solo mostraba el arranque de la placa | Probable: opción USB CDC On Boot desactivada | Activar USB CDC On Boot, volver a compilar y cargar |
+| 4 | `ModuleNotFoundError: No module named 'aiocoap'` | VS Code usaba Python 3.11 y la librería estaba instalada en Python 3.13 | Seleccionar el intérprete Python 3.13 en VS Code |
+| 5 | `NameError: name 'Context' is not defined` | Faltaba la línea `from aiocoap import ...` en el script | Restaurar los imports al inicio del archivo |
+| 6 | `TimeoutError` en `/led` y `/sensor` aunque la placa recibía la petición | La respuesta no incluía el Token y `aiocoap` la descartaba | Usar la versión larga de `sendResponse` con `packet.token` y `packet.tokenlen` (ver sección 8.1) |
+| 7 | La IP de la placa cambió | Cambio de red | Actualizar `IP_ESP32` con la IP del Monitor Serie |
+| 8 | `TimeoutError` en `GET /temperatura` | La respuesta 4.04 de la librería llega sin Token | Se analizó con `prueba_404.py` y se documentó |
+| 9 | `IndentationError` en el script de prueba | Línea con sangría incorrecta | Corregir la sangría |
 
-![Captura de Wireshark de GET /sensor](evidencias/wireshark_P1.png)
-
-| Campo | Valor observado |
-| :--- | :--- |
-| Tipo de mensaje de la petición | [COMPLETAR: CON o NON] |
-| Message ID de la petición | [COMPLETAR] |
-| Message ID de la respuesta | [COMPLETAR] |
-| Tipo y código de la respuesta | [COMPLETAR: por ejemplo ACK, 2.05 Content] |
-| Payload de la respuesta | [COMPLETAR: por ejemplo `Temp: 27.20 C`] |
-| Tamaño del mensaje CoAP de la respuesta | [COMPLETAR: bytes de la capa CoAP] |
-
-## 9. Preguntas de análisis
+## 10. Preguntas de análisis
 
 **1. ¿Por qué CoAP puede permitirse usar UDP, si UDP no garantiza la entrega? ¿Qué mecanismo compensa esa falta y en qué casos ni siquiera se usa?**
 
 CoAP puede usar UDP porque incorpora su propio mecanismo de fiabilidad, opcional y mucho más ligero que el de TCP. Cuando un mensaje se envía como Confirmable (CON), el receptor debe responder con un ACK; si el ACK no llega, el emisor retransmite el mismo mensaje con el mismo Message ID, y el receptor usa ese identificador para detectar duplicados. Este mecanismo no se usa en los mensajes No confirmables (NON), que se envían y se olvidan, pensados para datos donde perder una lectura no es grave, como lecturas periódicas de un sensor. De esta forma se evita el handshake, el control de flujo y el estado de conexión de TCP, que son costosos para un dispositivo con poca memoria y batería.
 
-**2. En tu captura de Wireshark, ¿la respuesta de `/sensor` fue un ACK independiente o viajó "a cuestas" en el mismo mensaje que el payload? ¿Cómo lo sabes?**
+**2. ¿La respuesta de `/sensor` fue un ACK independiente o viajó "a cuestas" en el mismo mensaje que el payload? ¿Cómo lo sabes?**
 
-Por la forma en que está escrito el servidor, la respuesta viaja "a cuestas" (*piggyback*): cada callback llama una sola vez a `sendResponse`, que envía un único mensaje de tipo ACK con el código 2.05 y el payload juntos, sin un ACK vacío previo. Esto es coherente con lo observado en P3, donde la respuesta fue un solo datagrama `60 84 ...` (ACK con código 4.04). En Wireshark se reconoce porque la petición recibe una única respuesta de tipo ACK con código 2.05 y payload, y no aparece un ACK vacío (código 0.00) seguido de otro mensaje. [COMPLETAR: confirmar con la captura de la sección 8.3.]
+Por la forma en que está escrito el servidor, la respuesta viaja "a cuestas" (*piggyback*): cada callback llama una sola vez a `sendResponse`, que envía un único mensaje de tipo ACK con el código de respuesta y el payload juntos, sin un ACK vacío previo. Esto es coherente con lo observado con `prueba_404.py`: la placa respondió con un solo datagrama de tipo ACK (`60`) que ya traía el código de respuesta (`84`, 4.04). No se hizo una captura de tráfico para confirmarlo en la respuesta de `/sensor`, por lo que esta conclusión se basa en el código del servidor y en esa observación.
 
 **3. ¿Qué campo te permitió saber que la respuesta correspondía a tu petición y no a la de un compañero? Relaciónalo con la sección 3.2.**
 
 Dos campos: el Message ID y el Token. El Message ID de la respuesta debe coincidir con el de la petición (en la prueba de P3 la petición usó `12 35` y la respuesta devolvió `12 35`), y el Token empareja la respuesta con la petición específica del cliente. Además, la respuesta se envía a la dirección IP y puerto del cliente que preguntó, así que la respuesta a un compañero no llega a otro equipo. En esta práctica se observó la importancia del Token: aunque el Message ID coincidía, `aiocoap` descartó la respuesta del 4.04 porque no traía el Token de su petición, y por eso ocurrió el timeout.
 
-**4. Una petición HTTP/1.1 mínima ocupa varios cientos de bytes con sus cabeceras. Calcula cuántos bytes ocupa tu mensaje CoAP de respuesta en la captura y compara.**
+**4. Una petición HTTP/1.1 mínima ocupa varios cientos de bytes con sus cabeceras. Calcula cuántos bytes ocupa tu mensaje CoAP de respuesta y compara.**
 
-La respuesta de `/sensor` se compone de la cabecera fija de 4 bytes, el Token (de 0 a 8 bytes), las opciones si las hay, el marcador `0xFF` (1 byte) y el payload. El payload `Temp: 27.20 C` ocupa 13 bytes, por lo que, sin Token ni opciones, el mensaje mínimo es de 4 + 1 + 13 = 18 bytes; con Token y alguna opción serían unos pocos bytes más. Medido en la captura, el mensaje CoAP ocupa [COMPLETAR: bytes de la capa CoAP en Wireshark]. Una respuesta HTTP/1.1 equivalente incluye línea de estado y varias cabeceras en texto (como `Content-Type` y `Content-Length`) que, según la guía de la práctica, suman varios cientos de bytes, además del handshake TCP previo. El mensaje CoAP es entonces de un orden de magnitud menor.
+La respuesta 4.04 recibida con `prueba_404.py` (`60 84 12 35 c2 ff ff`) ocupó 7 bytes. Para `/sensor`, la respuesta se compone de la cabecera fija de 4 bytes, el Token (de 0 a 8 bytes), las opciones si las hay, el marcador `0xFF` (1 byte) y el payload. El payload `Temp: 27.20 C` ocupa 13 bytes, por lo que, sin Token ni opciones, el mensaje mínimo es de 4 + 1 + 13 = 18 bytes; con Token y alguna opción serían unos pocos bytes más. Este valor es un cálculo a partir de la estructura del mensaje, no una medición. Una respuesta HTTP/1.1 equivalente incluye línea de estado y varias cabeceras en texto (como `Content-Type` y `Content-Length`) que, según la guía de la práctica, suman varios cientos de bytes, además del handshake TCP previo. El mensaje CoAP es entonces de un orden de magnitud menor.
 
 **5. Si este servidor controlara una bomba de riego con batería, ¿usarías mensajes CON o NON para reportar la humedad cada minuto? Justifica el costo en energía de tu elección.**
 
@@ -248,15 +251,15 @@ Para reportar la humedad cada minuto usaría mensajes NON. Cada minuto llega una
 
 **6. ¿Qué riesgo de seguridad implica un servidor CoAP sin DTLS dentro de una red compartida, y quién podría explotarlo en el laboratorio?**
 
-Sin DTLS no hay cifrado ni autenticación: el tráfico viaja en texto plano y el servidor responde a cualquier cliente que conozca su IP. Cualquier persona conectada a la misma red, por ejemplo otro equipo del laboratorio, podría leer los mensajes con Wireshark y ver las lecturas del sensor, o enviar un `POST /led` para encender y apagar el LED sin permiso. En esta práctica se comprobó la falta de autenticación: el script `prueba_404.py` envió una petición con un socket UDP simple y la placa la procesó sin pedir credenciales. También sería posible suplantar o alterar mensajes, por no existir verificación de integridad.
+Sin DTLS no hay cifrado ni autenticación: el tráfico viaja en texto plano y el servidor responde a cualquier cliente que conozca su IP. Cualquier persona conectada a la misma red, por ejemplo otro equipo del laboratorio, podría leer los mensajes con un analizador de red y ver las lecturas del sensor, o enviar un `POST /led` para encender y apagar el LED sin permiso. En esta práctica se comprobó la falta de autenticación: el script `prueba_404.py` envió una petición con un socket UDP simple y la placa la procesó sin pedir credenciales. También sería posible suplantar o alterar mensajes, por no existir verificación de integridad.
 
-## 10. Reto opcional
+## 11. Reto opcional
 
 **Reto 1: control de un LED físico mediante CoAP.** Se conectó un LED a la placa y se modificó `callback_led()` para comparar el payload: con `ON` se ejecuta `digitalWrite(LED_PIN, HIGH)` y con `OFF`, `digitalWrite(LED_PIN, LOW)`. La respuesta del servidor indica el estado aplicado. El pin se configura como salida en `setup()` con `pinMode`.
 
 ![LED encendido mediante POST /led](evidencias/led_encendido.jpg)
 
-## 11. Conclusiones
+## 12. Conclusiones
 
 - CoAP sobre UDP permite que un dispositivo pequeño ofrezca recursos con nombre (`/sensor`, `/led`) sin mantener una conexión: cada intercambio consistió en una petición y una respuesta independientes, y bastó una función por recurso en la ESP32-C6.
 - La librería CoAPSimple facilita el registro de rutas mediante callbacks, pero la respuesta debe incluir el Token de la petición para que un cliente como `aiocoap` la acepte. Con la versión corta de `sendResponse` el cliente terminaba en timeout aunque la placa recibía la petición; con la versión larga el servidor respondió `2.05 Content` en ambos recursos.
@@ -265,7 +268,7 @@ Sin DTLS no hay cifrado ni autenticación: el tráfico viaja en texto plano y el
 - Sin DTLS no hay cifrado ni autenticación, por lo que cualquier equipo de la misma red puede leer el tráfico o controlar el LED.
 - El control de un LED físico mediante `POST /led` mostró cómo un recurso CoAP puede actuar sobre el mundo físico y cómo el cliente no necesita saber cómo está implementado.
 
-## 12. Estructura del repositorio
+## 13. Estructura del repositorio
 
 | Archivo | Contenido |
 | :--- | :--- |
@@ -277,7 +280,7 @@ Sin DTLS no hay cifrado ni autenticación: el tráfico viaja en texto plano y el
 
 En Arduino IDE, el archivo `.ino` debe estar dentro de una carpeta con el mismo nombre.
 
-## 13. Referencias
+## 14. Referencias
 
 - Shelby, Z., Hartke, K. y Bormann, C. (2014). *The Constrained Application Protocol (CoAP)*, RFC 7252. IETF.
 - Librería CoAPSimple, de hirotakaster, disponible en el Administrador de Librerías de Arduino IDE.
