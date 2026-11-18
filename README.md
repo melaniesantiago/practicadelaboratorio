@@ -143,7 +143,7 @@ Antes de ejecutarlo, se debe modificar `IP_ESP32` con la dirección que muestra 
 
 El Monitor Serie mostró la conexión a la red Wi-Fi y la dirección IP asignada a la placa.
 
-![Monitor Serie con la IP del servidor](evidencias/ip_del_servidor.jpeg)
+![Monitor Serie con la IP del servidor](evidencia/ip_del_servidor.jpeg)
 
 ### 7.2 Resumen de pruebas
 | Prueba | Petición | Resultado esperado | Resultado obtenido |
@@ -154,9 +154,9 @@ El Monitor Serie mostró la conexión a la red Wi-Fi y la dirección IP asignada
 | P4 | `GET /sensor` x5 | Cinco temperaturas entre 25.4 y 30.3 °C | Ver tabla 7.3 |
 
 
-![P1 y P4: lecturas de /sensor](evidencias/P1_sensor.png)
-![P2: control del LED, cliente y Monitor Serie](evidencias/P2_led.png)
-![P3: ruta inexistente](evidencias/P3_temperatura.png)
+![P1 y P4: lecturas de /sensor](evidencia/P1_sensor.png)
+![P2: control del LED, cliente y Monitor Serie](evidencia/P2_led.png)
+![P3: ruta inexistente](evidencia/P3_temperatura.png)
 
 ### 7.3 Prueba P4: cinco lecturas de `/sensor`
 
@@ -177,7 +177,7 @@ La guía indica una salida como `Temp: 27.1 C`, pero la temperatura se imprime c
 
 Se realizó una captura de tráfico real en la interfaz Wi-Fi filtrando por el protocolo `coap` (puerto UDP `5683`) durante la ejecución completa del script cliente (`10.44.133.91`, puerto origen `63234`) contra el servidor ESP32-C6 (`10.44.133.130`, puerto destino `5683`). En total se observaron 16 paquetes CoAP (8 peticiones y 8 respuestas)...
 
-![Captura de tráfico CoAP en Wireshark](evidencias/wireshark_coap.jpg)
+![Captura de tráfico CoAP en Wireshark](evidencia/wireshark_coap.jpg)
 
 ## 8. Análisis de resultados
 
@@ -260,7 +260,7 @@ Sin DTLS no hay cifrado ni autenticación: el tráfico viaja en texto plano y el
 
 **Reto 1: control de un LED físico mediante CoAP.** Se conectó un LED a la placa y se modificó `callback_led()` para comparar el payload: con `ON` se ejecuta `digitalWrite(LED_PIN, HIGH)` y con `OFF`, `digitalWrite(LED_PIN, LOW)`. La respuesta del servidor indica el estado aplicado. El pin se configura como salida en `setup()` con `pinMode`.
 
-![LED encendido mediante POST /led](evidencias/led_encendido.jpg)
+![LED encendido mediante POST /led](evidencia/led_encendido.jpg)
 
 ## 12. Conclusiones
 
