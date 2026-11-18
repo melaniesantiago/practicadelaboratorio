@@ -143,7 +143,7 @@ Antes de ejecutarlo, se debe modificar `IP_ESP32` con la dirección que muestra 
 
 El Monitor Serie mostró la conexión a la red Wi-Fi y la dirección IP asignada a la placa.
 
-![Monitor Serie con la IP del servidor](evidencias/monitor_serie_ip.png)
+![Monitor Serie con la IP del servidor](evidencias/ip_del_servidor.jpeg)
 
 ### 7.2 Resumen de pruebas
 | Prueba | Petición | Resultado esperado | Resultado obtenido |
