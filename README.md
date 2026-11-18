@@ -12,13 +12,11 @@
 
 ## Integrantes
 
-| Nombre | Actividad realizada |
-| :--- | :--- |
-| Freyra Wendy Martínez Martínez | [COMPLETAR: actividad] |
-| Carol Mera Ibarra | [COMPLETAR: actividad] |
-| Karen Pérez Ortiz | [COMPLETAR: actividad] |
-| Melanie Santiago Resendiz | [COMPLETAR: actividad] |
-| Andrea Jacob Salas | [COMPLETAR: actividad] |
+- Freyra Wendy Martínez Martínez 
+- Carol Mera Ibarra 
+- Karen Pérez Ortiz
+- Melanie Santiago Resendiz
+- Andrea Jacob Salas
 
 ## Evidencia en video
 
