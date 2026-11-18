@@ -20,8 +20,10 @@
 
 ## Evidencia en video
 
-Video del equipo realizando la práctica: [COMPLETAR: enlace al video]
+Video del equipo realizando la práctica:
+## VIDEO DE PRACTICA: Implementación de un Servidor CoAP en ESP32 con Arduino IDE
 
+https://drive.google.com/drive/folders/1cBncRejVvgpj8fkIvL4IdxTe3QwQluW5?usp=sharing
 ---
 
 ## Índice
@@ -154,9 +156,8 @@ El Monitor Serie mostró la conexión a la red Wi-Fi y la dirección IP asignada
 | P4 | `GET /sensor` x5 | Cinco temperaturas entre 25.4 y 30.3 °C | Ver tabla 7.3 |
 
 
-![P1 y P4: lecturas de /sensor](evidencia/P1_sensor.png)
-![P2: control del LED, cliente y Monitor Serie](evidencia/P2_led.png)
-![P3: ruta inexistente](evidencia/P3_temperatura.png)
+![P2: control del LED, cliente y Monitor Serie](evidencia/evi.jpeg)
+
 
 ### 7.3 Prueba P4: cinco lecturas de `/sensor`
 
@@ -283,9 +284,7 @@ Sin DTLS no hay cifrado ni autenticación: el tráfico viaja en texto plano y el
 
 En Arduino IDE, el archivo `.ino` debe estar dentro de una carpeta con el mismo nombre.
 
-## VIDEO DE PRACTICA: Implementación de un Servidor CoAP en ESP32 con Arduino IDE
 
-https://drive.google.com/drive/folders/1cBncRejVvgpj8fkIvL4IdxTe3QwQluW5?usp=sharing
 
 
 ## 14. Referencias
